@@ -9,7 +9,7 @@ import numpy as np
 from numpy.random import choice, seed
 import copy
 from pprint import pprint
-seed(50)
+seed(10000)
 
 evs, users = load_all()
 city_events = load_city_events()
@@ -68,4 +68,3 @@ def get_sample_prediction(city: str):
 
 
 get_sample_prediction('moscow')
-
