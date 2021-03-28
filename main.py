@@ -53,9 +53,9 @@ def get_sample_prediction(city: str):
     print(tabulate(response_events, headers='keys', tablefmt='psql'))
     print('\n'*3)
     prediction = predict(random_user['id'].values.tolist()[0], response_events['id'].values.tolist())
-    response_events = response_events.reindex(prediction)
     print('Ranked events answer:')
-    print(tabulate(response_events, headers='keys', tablefmt='psql'))
+    print(prediction)
 
 
 get_sample_prediction('moscow')
+
