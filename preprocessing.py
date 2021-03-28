@@ -51,19 +51,18 @@ def prepare_events(events):
         backup = events[i]['userRating']
         events[i]['userRating'] = backup['overall']['value']
         events[i]['usersRated'] = backup['overall']['count']
-        events[i]['dateStarted'] = time.mktime(datetime.datetime.strptime(
-            events[i]['dateStarted'], "%Y-%m-%d").timetuple())
-        events[i]['dateEnd'] = time.mktime(datetime.datetime.strptime(
-            events[i]['dateEnd'], "%Y-%m-%d").timetuple())
         event_tags = {tag: 0 for tag in tags}
         for tag in events[i]['eventTags']:
             for main_tag, ls in tags_dict.items():
                 if tag in ls:
                     event_tags[main_tag] += 1
         events[i]['tags'] = event_tags
+        del events[i]['dateStarted']
+        del events[i]['dateEnd']
         del events[i]['city']
         del events[i]['eventTags']
         del events[i]['coordinates']
+        events[i]['contentRating'] = int(events[i]['contentRating'].replace('+', ''))
     events = pd.DataFrame(one_hot_dict(events, 'tags', 'eventTag'))
     return events
 

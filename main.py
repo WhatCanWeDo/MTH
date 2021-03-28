@@ -6,6 +6,7 @@ import datetime
 from tabulate import tabulate
 import pandas as pd
 from numpy.random import choice, seed
+import copy
 from pprint import pprint
 seed(42)
 
@@ -16,10 +17,12 @@ city_events = load_city_events()
 def predict(user_id: str, events_id: List[str]) -> List[str]:
     cbr = CatBoostRegressor()
     cbr.load_model('model_dump')
-    user = [user for user in users if user['id'] == user_id]
-    pprint(user)
-    user = user[0]
-    user['requestTime'] = time.mktime(datetime.datetime.strptime(user['requestTime'], "%Y-%m-%d").timetuple())
+    user = None
+    for i in users:
+        if i['id'] == user_id:
+            user = i
+    if user is None:
+        raise RuntimeError(f'User with user_id: {user_id} does not exist')
     events = [event for event in evs if event['id'] in events_id]
     pairs = [(user['id'], event['id']) for event in events]
     if 'ratedEvents' in user.keys():
@@ -32,10 +35,8 @@ def predict(user_id: str, events_id: List[str]) -> List[str]:
     return dataset['event_id'].values.tolist()
 
 
-def get_sample_prediction(city: str, request_time: str):
-    request_time = time.mktime(datetime.datetime.strptime(request_time, "%Y-%m-%d").timetuple())
+def get_sample_prediction(city: str):
     random_user = choice(users)
-    random_user['requestTime'] = request_time
     max_events_num = 50
     response_events = []
     for _ in range(max_events_num):
@@ -51,10 +52,10 @@ def get_sample_prediction(city: str, request_time: str):
     print('Raw events answer:')
     print(tabulate(response_events, headers='keys', tablefmt='psql'))
     print('\n'*3)
-    prediction = predict(random_user['id'], response_events['id'].values.tolist())
+    prediction = predict(random_user['id'].values.tolist()[0], response_events['id'].values.tolist())
     response_events = response_events.reindex(prediction)
     print('Ranked events answer:')
     print(tabulate(response_events, headers='keys', tablefmt='psql'))
 
 
-get_sample_prediction('moscow', '2021-03-28')
+get_sample_prediction('moscow')

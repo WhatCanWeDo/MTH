@@ -21,7 +21,7 @@ def train():
     train_size = 0.8
     X_train, X_val, Y_train, Y_val = train_test_split(dataset, target, train_size=train_size)
     cbr.fit(X_train, Y_train,
-            cat_features=['user_id', 'event_id', 'contentRating'],
+            cat_features=['user_id', 'event_id'],
             use_best_model=True,
             eval_set=[(X_val, Y_val)],
             verbose=True,
