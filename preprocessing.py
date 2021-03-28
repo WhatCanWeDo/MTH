@@ -72,13 +72,13 @@ def prepare_users(users_list):
     return users_list
 
 
-def create_dataset(pairs, users_, events, mode='train'):
+def create_dataset(pairs, users_, events, mode='train', how='left'):
     cols = ['user_id', 'event_id']
     if mode == 'train':
         cols.append('score')
     dataset = pd.DataFrame(pairs, columns=cols)
     for data, id_col in [(users_, 'user_id'), (events, 'event_id')]:
-        dataset = dataset.merge(data, how='left', left_on=id_col, right_on='id')
+        dataset = dataset.merge(data, how=how, left_on=id_col, right_on='id')
         dataset.drop(columns=['id'], inplace=True)
     return dataset
 

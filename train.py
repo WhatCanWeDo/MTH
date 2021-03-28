@@ -7,7 +7,7 @@ from sklearn.model_selection import train_test_split
 def train():
     dataset, target = prepare_for_training()
     model_params = {
-        'learning_rate': 0.03,
+        'learning_rate': 0.5,
         'depth': 3,
         'iterations': 2000,
         'subsample': 0.5,
@@ -18,7 +18,7 @@ def train():
         'loss_function': 'RMSE',
     }
     cbr = CatBoostRegressor(**model_params)
-    train_size = 0.8
+    train_size = 0.99
     X_train, X_val, Y_train, Y_val = train_test_split(dataset, target, train_size=train_size)
     cbr.fit(X_train, Y_train,
             cat_features=['user_id', 'event_id'],
